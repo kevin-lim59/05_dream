@@ -2,6 +2,18 @@ import { access, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const FILES = {
+  'MEMORY.md': `# MEMORY
+
+## Active Projects
+
+## Stable Preferences
+
+## Current Priorities
+
+## Operational Rules
+
+## Recent Promoted Memories
+`,
   'memory/README.md': `# Dream Memory
 
 이 폴더는 Dream Memory System이 장기 기억을 정리하는 공간입니다.
@@ -11,6 +23,7 @@ const FILES = {
 - 중요한 사실/선호/결정만 승격한다.
 - 각 항목에는 가능한 한 Sources와 Last updated를 남긴다.
 - 확신이 낮으면 memory/inbox.md로 보낸다.
+- 같은 entry slug가 이미 있으면 append 대신 해당 블록을 replace/update 한다.
 `,
   'memory/inbox.md': `# Dream Memory Inbox
 
