@@ -131,9 +131,7 @@ sequenceDiagram
 │        └─ text-cleaning.mjs
 ├─ supabase/
 │  └─ dream_memory.sql
-└─ tmp/
-   └─ dream-memory/
-      └─ 2026-03-12.report.json
+└─ LICENSE
 ```
 
 ---
@@ -257,19 +255,12 @@ This repository currently contains:
 - design docs,
 - working prototype code,
 - draft schema,
-- a sample report artifact.
-
-As the project matures, sample/generated artifacts under `tmp/` may move to examples, fixtures, or be removed from the default repo state.
+- contributor-facing project context.
 
 ---
 
 ## License / status
 
-No explicit OSS license has been added yet.
-Until a license is chosen, treat this repository as source-available but not fully open for unrestricted reuse.
+Licensed under the MIT License.
 
-If you want, the next cleanup step is:
-1. add a license,
-2. add `.gitignore`,
-3. decide whether `tmp/` sample reports should stay in-repo,
-4. add issues/projects for roadmap tracking.
+The next good cleanup step is adding roadmap issues / project boards and improving contributor-facing docs.
