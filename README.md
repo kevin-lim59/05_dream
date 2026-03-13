@@ -239,6 +239,7 @@ It is **not** trying to be:
 
 - `docs/dream-memory-system-v0.md` — original v0 direction
 - `docs/dream-memory-v1-architecture.md` — refined v1 architecture based on the broader long-term memory philosophy
+- `docs/project-aware-memory-model.md` — project-aware session/candidate linking for v1 step one
 
 ---
 
