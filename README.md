@@ -1,5 +1,7 @@
 # 05_dream
 
+[한국어 README 보기](./README-kr.md)
+
 `05_dream` is an experimental **dream-memory pipeline** for OpenClaw-style agent systems.
 
 It turns raw session transcripts into a nightly memory workflow:
