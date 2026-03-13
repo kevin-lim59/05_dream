@@ -93,6 +93,9 @@ function analyzeSession(session, { targetDate }) {
     automationSession,
     userMessageRatio,
     roleCounts: session.roleCounts || {},
+    primaryProjectHint: session.primaryProjectHint || null,
+    projectHints: session.projectHints || [],
+    projectSignals: session.projectSignals || [],
     reasons: collectReasons({
       explicitMemorySignal,
       longTermProjectSignal,

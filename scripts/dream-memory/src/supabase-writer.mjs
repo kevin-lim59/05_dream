@@ -158,7 +158,7 @@ async function upsertDreamSessions(client, report, jobId) {
     analysis_status: 'analyzed',
     promotion_status: mapPromotionStatus(session.promotionDecision),
     importance_score: session.importanceScore,
-    importance_band: session.importanceBand,
+    importance_band: normalizeImportanceBand(session.importanceBand),
     retention_class: session.retentionClass,
     summary_short: session.summaryShort,
     summary_json: {
@@ -182,7 +182,7 @@ function buildDreamProjectRows(report) {
 
   for (const session of report.sessions || []) {
     for (const hint of session.projectHints || []) {
-      if (!hint?.slug) continue;
+      if (!hint?.slug || (hint.confidence || 0) < PROJECT_LINK_MIN_CONFIDENCE) continue;
       const current = bySlug.get(hint.slug) || {
         slug: hint.slug,
         name: hint.label || hint.slug,
@@ -329,6 +329,12 @@ function inferProjectKind(slug) {
   if (value.includes('personal')) return 'personal';
   if (value.includes('lib') || value.includes('sdk')) return 'library';
   return 'app';
+}
+
+function normalizeImportanceBand(value) {
+  if (value === 'critical') return 'high';
+  if (value === 'high' || value === 'medium' || value === 'low') return value;
+  return 'low';
 }
 
 function inferChannel(fileName) {
