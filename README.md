@@ -192,6 +192,16 @@ For self-hosted Supabase env bridging, see:
 node scripts/dream-memory/nightly.mjs --date yesterday --dry-run=false --archive=true --purge=true
 ```
 
+### Tonight MVP quick run
+
+```bash
+node scripts/dream-memory/e2e.mjs
+```
+
+This one command does two things against a checked-in fixture report:
+1. persists selective embedding payloads into a local JSON snapshot (`tmp/dream-memory/2026-03-13.embeddings.json` by default)
+2. runs recall planning with the semantic stub provider so the semantic path is exercised end-to-end
+
 ### Example flags
 
 ```bash
@@ -212,6 +222,8 @@ DREAM_SUPABASE_SERVICE_ROLE_KEY=...
 DREAM_ARCHIVE_TO_SUPABASE=true
 DREAM_WRITE_PROMOTIONS=false
 DREAM_PURGE_DRY_RUN=true
+DREAM_EMBEDDING_STORE=supabase   # or file for local MVP verification
+DREAM_EMBEDDING_OUT_FILE=tmp/dream-memory/local.embeddings.json
 ```
 
 If those env vars are not explicitly present, the current implementation can also bridge from an existing self-hosted Supabase `.env` layout.

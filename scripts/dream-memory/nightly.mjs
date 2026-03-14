@@ -11,6 +11,8 @@ import { buildMemoryCandidates } from './src/candidates.mjs';
 import { applyPromotions } from './src/promotion-writer.mjs';
 import { buildPurgePlan } from './src/purge-planner.mjs';
 import { persistArchiveReport } from './src/supabase-writer.mjs';
+import { buildSelectiveEmbeddingPayloads } from './src/embedding-payloads.mjs';
+import { persistEmbeddingReport } from './src/embedding-store.mjs';
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
@@ -40,6 +42,7 @@ async function main() {
 
   const promotions = await applyPromotions({ sessions: analyzed, targetDate: window.date }, config);
   const purge = buildPurgePlan({ sessions: analyzed, promotions, targetDate: window.date }, config);
+  const embeddingPayloads = buildSelectiveEmbeddingPayloads({ sessions: analyzed, promotions });
 
   const report = {
     version: 3,
@@ -61,6 +64,7 @@ async function main() {
         return sum + (hasProjects ? ((s.candidates || []).length) : 0);
       }, 0),
       promotionsPlanned: promotions.length,
+      embeddingPayloadsPlanned: embeddingPayloads.length,
       purgeCandidates: (purge.actions || []).filter((action) => action.action === 'purge_candidate').length,
       keep: (purge.actions || []).filter((action) => action.action === 'keep').length,
       review: (purge.actions || []).filter((action) => action.action === 'review').length,
@@ -70,6 +74,10 @@ async function main() {
       reject: analyzed.filter((s) => s.effectivePromotionDecision === 'reject').length,
     },
     promotions,
+    embeddingPreview: {
+      count: embeddingPayloads.length,
+      payloads: embeddingPayloads,
+    },
     purge,
     sessions: analyzed,
   };
@@ -87,13 +95,23 @@ async function main() {
     archive = await persistArchiveReport(report, config);
   }
 
+  let embeddingArchive = null;
+  if (config.persistEmbeddings) {
+    embeddingArchive = await persistEmbeddingReport(report, config, {
+      provider: config.embeddingProvider,
+      model: config.embeddingModel,
+    });
+  }
+
   console.log(JSON.stringify({
     ok: true,
     targetDate: window.date,
     mode: report.mode,
     outFile: config.dryRun ? null : outFile,
     archivedToSupabase: Boolean(archive),
+    embeddingsPersisted: Boolean(embeddingArchive),
     archive,
+    embeddingArchive,
     counts: report.counts,
   }, null, 2));
 }

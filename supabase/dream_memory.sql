@@ -90,7 +90,17 @@ create table if not exists public.dream_memory_candidates (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   unique(session_id, kind, title),
-  constraint dream_memory_candidates_kind_check check (kind in ('fact', 'operation_rule', 'decision', 'project_state')),
+  constraint dream_memory_candidates_kind_check check (
+    kind in (
+      'project_state',
+      'user_preference',
+      'decision',
+      'operation_rule',
+      'fact',
+      'relationship',
+      'todo'
+    )
+  ),
   constraint dream_memory_candidates_decision_check check (decision in ('promote', 'defer', 'archive_only', 'reject'))
 );
 

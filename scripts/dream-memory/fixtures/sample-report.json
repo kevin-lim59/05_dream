@@ -1,0 +1,60 @@
+{
+  "version": 3,
+  "mode": "fixture",
+  "targetDate": "2026-03-13",
+  "timeZone": "Asia/Seoul",
+  "sessions": [
+    {
+      "externalSessionId": "session-fixture-1",
+      "targetDate": "2026-03-13",
+      "summaryShort": "[high] 05_dream embedding MVP 연결 및 recall stub 점검",
+      "projectHints": [
+        { "slug": "05_dream", "label": "05_dream", "confidence": 0.98 }
+      ],
+      "candidates": [
+        {
+          "contentFingerprint": "cand-embed-mvp",
+          "kind": "project_state",
+          "title": "project_state: embedding persistence MVP path",
+          "summary": "05_dream nightly에서 selective embedding payload를 file/supabase persistence path로 실제로 흘릴 수 있다.",
+          "primaryProject": { "slug": "05_dream", "label": "05_dream" },
+          "projectLinks": [
+            { "slug": "05_dream", "confidence": 0.98, "sources": ["cwd", "text"] }
+          ],
+          "decision": "promote",
+          "importanceScore": 92,
+          "confidenceScore": 0.95,
+          "sourceMessageIds": ["m1"],
+          "reasonCodes": ["explicitMemorySignal", "projectScopedWork"]
+        },
+        {
+          "contentFingerprint": "cand-recall-cli",
+          "kind": "operation_rule",
+          "title": "operation_rule: recall CLI로 semantic stub 호출",
+          "summary": "recall.mjs --query 로 lexical ranking 이후 semantic stub/provider slot이 실제 한 번 호출된다.",
+          "primaryProject": { "slug": "05_dream", "label": "05_dream" },
+          "projectLinks": [
+            { "slug": "05_dream", "confidence": 0.97, "sources": ["text"] }
+          ],
+          "decision": "defer",
+          "importanceScore": 85,
+          "confidenceScore": 0.91,
+          "sourceMessageIds": ["m2"],
+          "reasonCodes": ["workflowRule"]
+        }
+      ]
+    }
+  ],
+  "promotions": [
+    {
+      "externalSessionId": "session-fixture-1",
+      "entrySlug": "05-dream-embedding-mvp-path",
+      "title": "embedding MVP path",
+      "kind": "project_state",
+      "targetFile": "memory/projects/05_dream.md",
+      "targetSection": "## Active Project Memory",
+      "promotionMode": "append_or_replace",
+      "contentMarkdown": "- Embedding payloads can be persisted through tonight's MVP path and recalled through the stub semantic provider."
+    }
+  ]
+}

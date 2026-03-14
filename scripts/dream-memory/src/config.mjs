@@ -39,6 +39,11 @@ export function loadConfig(args = {}) {
   const writePromotions = booleanArg(args.promote ?? process.env.DREAM_WRITE_PROMOTIONS, false);
   const purgeDryRun = booleanArg(args.purge ?? process.env.DREAM_PURGE_DRY_RUN, false);
   const limit = positiveIntOrNull(args.limit ?? process.env.DREAM_LIMIT);
+  const persistEmbeddings = booleanArg(args.embeddings ?? process.env.DREAM_PERSIST_EMBEDDINGS, false);
+  const embeddingProvider = String(args['embedding-provider'] || process.env.DREAM_EMBEDDING_PROVIDER || 'local').trim();
+  const embeddingModel = String(args['embedding-model'] || process.env.DREAM_EMBEDDING_MODEL || 'stub-v1').trim();
+  const embeddingStoreMode = String(args['embedding-store'] || process.env.DREAM_EMBEDDING_STORE || 'supabase').trim().toLowerCase();
+  const embeddingOutFile = args['embedding-out-file'] || process.env.DREAM_EMBEDDING_OUT_FILE || '';
   const envBridge = loadSupabaseBridgeEnv(workspaceRoot);
 
   return {
@@ -51,6 +56,11 @@ export function loadConfig(args = {}) {
     archiveToSupabase,
     writePromotions,
     purgeDryRun,
+    persistEmbeddings,
+    embeddingProvider,
+    embeddingModel,
+    embeddingStoreMode,
+    embeddingOutFile: embeddingOutFile ? path.resolve(embeddingOutFile) : '',
     limit,
     knownProjects: loadKnownProjects(workspaceRoot),
     supabaseUrl: process.env.DREAM_SUPABASE_URL || envBridge.supabaseUrl || '',
