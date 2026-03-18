@@ -5,6 +5,37 @@ const BATCH_SIZE = 100;
 const MAX_TEXT_CHARS = 8000;
 const TIMEOUT_MS = 30_000;
 
+export async function embedText(text, { apiKey, model }) {
+  if (!apiKey) throw new Error('GEMINI_API_KEY required for embedding');
+  const modelName = normalizeModel(model);
+  const url = `${API_BASE}/${modelName}:embedContent?key=${apiKey}`;
+
+  let response;
+  try {
+    response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: `models/${modelName}`,
+        content: { parts: [{ text: String(text || '').slice(0, MAX_TEXT_CHARS) }] },
+      }),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+  } catch (networkError) {
+    throw new Error(`Gemini Embedding API network error: ${sanitizeApiKey(networkError.message)}`);
+  }
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => '');
+    throw new Error(`Gemini Embedding API ${response.status}: ${sanitizeApiKey(body).slice(0, 200)}`);
+  }
+
+  const result = await response.json();
+  const values = result?.embedding?.values;
+  if (!values || !Array.isArray(values)) throw new Error('Empty embedding response');
+  return values;
+}
+
 export async function generateEmbeddings(payloads, { apiKey, model }) {
   if (!apiKey) throw new Error('GEMINI_API_KEY required for embedding generation');
   if (!payloads || payloads.length === 0) return new Map();
@@ -32,22 +63,26 @@ export async function generateEmbeddings(payloads, { apiKey, model }) {
 async function embedBatch(payloads, { apiKey, modelName }) {
   const url = `${API_BASE}/${modelName}:batchEmbedContents?key=${apiKey}`;
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      requests: payloads.map((p) => ({
-        model: `models/${modelName}`,
-        content: { parts: [{ text: String(p.text || '').slice(0, MAX_TEXT_CHARS) }] },
-      })),
-    }),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
+  let response;
+  try {
+    response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requests: payloads.map((p) => ({
+          model: `models/${modelName}`,
+          content: { parts: [{ text: String(p.text || '').slice(0, MAX_TEXT_CHARS) }] },
+        })),
+      }),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+  } catch (networkError) {
+    throw new Error(`Gemini Embedding API network error: ${sanitizeApiKey(networkError.message)}`);
+  }
 
   if (!response.ok) {
     const body = await response.text().catch(() => '');
-    const sanitized = sanitizeApiKey(body);
-    throw new Error(`Gemini Embedding API ${response.status}: ${sanitized.slice(0, 200)}`);
+    throw new Error(`Gemini Embedding API ${response.status}: ${sanitizeApiKey(body).slice(0, 200)}`);
   }
 
   const result = await response.json();
