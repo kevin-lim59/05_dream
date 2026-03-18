@@ -184,7 +184,7 @@ export function buildEmbeddingRows(payloads, options = {}) {
       payload_fingerprint: buildPayloadFingerprint(payload),
       dimensions: hasVector ? vectorData.dimensions : null,
       vector_json: hasVector ? vectorData.vector : null,
-      status: hasVector ? 'completed' : 'pending',
+      status: hasVector ? 'embedded' : 'pending',
       requested_at: now,
       generated_at: hasVector ? now : null,
       last_error: null,
